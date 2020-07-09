@@ -7,3 +7,5 @@ Check Main function to see implemented commands and coresponding functions.
 * Gather and print VBR information;
 * Print cluster status based on bitmap position (absolute byte position);
 * Carve data out into file by defining the start and the end clusters.
+
+I'd like to add reading info from the file entries.
