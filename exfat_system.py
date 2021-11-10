@@ -1,24 +1,23 @@
 import sys
-#import binascii
-#from math import floor
 
+# Declaration of global variables
 INPUT_FILE = ''
 
 # exFAT Volume Boot Record offset list
-OEM_descriptor =                    [0x03, 8] #EXFAT___
-partition_sector_absolute_offset =  [0x40, 8]
-total_sectors_on_volume =           [0x48, 8]
-location_of_fat =                   [0x50, 4] #sectors
-physical_size_of_fat =              [0x54, 4] #in sectors
-cluster_heap =                      [0x58, 4] #data area    / VBR + VBR copy + FAT#1 + FAT#x
-number_of_clusters =                [0x5c, 4]
-root_directory =                    [0x60, 4] #Root Directory first cluster
-volume_serial_number =              [0x64, 4]
-active_fat =                        [0x6b, 1]
-bytes_per_sector =                  [0x6c, 1] #power of 2
-sectors_per_cluster =               [0x6d, 1] #power of 2    
-number_of_fats =                    [0x6e, 1] #usually 1
-percentage_in_use =                 [0x70, 1]
+OEM_descriptor                      = [0x03, 8] #EXFAT___
+partition_sector_absolute_offset    = [0x40, 8]
+total_sectors_on_volume             = [0x48, 8]
+location_of_fat                     = [0x50, 4] #sectors
+physical_size_of_fat                = [0x54, 4] #in sectors
+cluster_heap                        = [0x58, 4] #data area    / VBR + VBR copy + FAT#1 + FAT#x
+number_of_clusters                  = [0x5c, 4]
+root_directory                      = [0x60, 4] #Root Directory first cluster
+volume_serial_number                = [0x64, 4]
+active_fat                          = [0x6b, 1]
+bytes_per_sector                    = [0x6c, 1] #power of 2
+sectors_per_cluster                 = [0x6d, 1] #power of 2    
+number_of_fats                      = [0x6e, 1] #usually 1
+percentage_in_use                   = [0x70, 1]
 
 #init of exFAT Volume Boot Record values list
 PARTITION_SECTOR_OFFSET = 0
@@ -52,6 +51,7 @@ def get_bytes(file, offset, length):
     return file.read(length)
 
 def get_VBR(file):
+    # tell function to use globaly declared variables
     global PARTITION_SECTOR_OFFSET
     global SECTOR_COUNT
     global FAT_LOCATION
@@ -68,6 +68,7 @@ def get_VBR(file):
     global BITMAP_OFFSET
     global ROOT_DIRECTORY_OFFSET
     
+    # 2** means power of 2
     PARTITION_SECTOR_OFFSET = int.from_bytes    (get_bytes(file,    partition_sector_absolute_offset[0],    partition_sector_absolute_offset[1]),   byteorder='little')
     SECTOR_COUNT            = int.from_bytes    (get_bytes(file,    total_sectors_on_volume[0],             total_sectors_on_volume[1]),            byteorder='little')
     FAT_LOCATION            = int.from_bytes    (get_bytes(file,    location_of_fat[0],                     location_of_fat[1]),                    byteorder='little')
@@ -105,11 +106,11 @@ def print_VBR():
     print("\n") #empty line
 
 def bitmap_position(file):      #327839 & 327832 in t.dd
-    offset = int(input("enter byte position in bitmap: "))
+    offset          = int(input("enter byte position in bitmap: "))
     relative_offset = offset - BITMAP_OFFSET
-    pos_from = relative_offset * CLUSTER_SIZE + 2 #2 because 1 is VBR cluster
-    pos_to = pos_from + 7
-    pos_byte = get_bytes(file, offset, 1)
+    pos_from        = relative_offset * CLUSTER_SIZE + 2 #2 because 1 is VBR cluster
+    pos_to          = pos_from + 7
+    pos_byte        = get_bytes(file, offset, 1)
     
     print("Relative offset: ", relative_offset)
     hex = print_hex(pos_byte)
@@ -146,6 +147,7 @@ def carve_data(file):
             data = file.read(SECTOR_SIZE)
             output.write(data)
 
+# Programs entry function
 def Main():
     global INPUT_FILE
     INPUT_FILE = input('Input file: ')
@@ -180,16 +182,7 @@ def Main():
             else:
                 print("Command does not exists: ", command)
 
+# Declare entry function
 if __name__ == '__main__':                  #triggered by call from terminal
     Main()
-
-
-
-
-
-
-
-
-
-
 
