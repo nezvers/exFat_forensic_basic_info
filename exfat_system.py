@@ -180,7 +180,7 @@ def Main():
                 print("exit            - will exit the script. \n")
             
             else:
-                print("Command does not exists: ", command)
+                print("Command does not exists: ", command, "\nUse \"help\" to see commands")
 
 # Declare entry function
 if __name__ == '__main__':                  #triggered by call from terminal
